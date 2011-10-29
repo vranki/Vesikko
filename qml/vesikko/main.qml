@@ -2,35 +2,34 @@ import QtQuick 1.0
 
 Rectangle {
     id: map
-    color: "steelblue"
+    z: -1000
+    color: "blue"
     property int gridsize: 100
-    property int gridCount: 10
+    property int gridCount: 20
     ZoomControl {
+        z:100
         id: zoomcontrol
         width: parent.width
         height: parent.height
     }
     Row {
+        z:100
         spacing: 5
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         Helm {
             objectName: "helm"
+
         }
         SpeedControl {
             objectName: "speed"
         }
     }
     Text {
-        id: scaleText
-        text: "Map Scale " + parent.width / zoomcontrol.scaling + "m"
-        anchors.horizontalCenter: parent.horizontalCenter
-    }
-    Text {
+        z:100
         id: statusText
         text: ""
         anchors.horizontalCenter: parent.horizontalCenter
-        anchors.top: scaleText.bottom
     }
     Image {
         id: sub
@@ -38,6 +37,7 @@ Rectangle {
         source: "sub.png"
         smooth: true
         z: 10
+        scale:0.5
         transformOrigin: "Center"
         property real rudder: 0
         property real lat: 0
@@ -55,7 +55,8 @@ Rectangle {
             Rectangle {
                 border.color: "blue"
                 border.width: 1
-                color: "#00000000"
+                z: -100
+                color: "steelblue"
                 width: gridsize * zoomcontrol.scaling
                 height: width
             }

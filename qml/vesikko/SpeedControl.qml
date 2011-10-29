@@ -10,8 +10,8 @@ Row {
     function updateSpeed() {
         if(speed==-1) statusText.text = "Reverse"
         if(speed==0) statusText.text = "Full Stop"
-        if(speed==1) statusText.text = "Silent running"
-        if(speed==2) statusText.text = "Cruise speed"
+        if(speed==1) statusText.text = "Slow ahead"
+        if(speed==2) statusText.text = "Full speed ahead"
         if(speed==3) statusText.text = "Flank speed"
         speedPanel.setSpeed(speed)
     }

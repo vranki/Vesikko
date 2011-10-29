@@ -10,8 +10,8 @@ Row {
         MouseArea {
             anchors.fill: parent
             onClicked: { if(helmPanel.helm > -3) helmPanel.helm -= 1; helmPanel.setHelm(helmPanel.helm);
-                if(helmPanel.helm==-1)  statusText.text="Rudder quarter left";
-                if(helmPanel.helm==-2)  statusText.text="Rudder left";
+                if(helmPanel.helm==-1)  statusText.text="Rudder 5 degrees left";
+                if(helmPanel.helm==-2)  statusText.text="Rudder 20 degrees left";
                 if(helmPanel.helm==-3)  statusText.text="Rudder full left";
             }
         }
@@ -33,8 +33,8 @@ Row {
         MouseArea {
             anchors.fill: parent
             onClicked: {if(helmPanel.helm < 3)  helmPanel.helm += 1; helmPanel.setHelm(helmPanel.helm);
-                if(helmPanel.helm==1)  statusText.text="Rudder quarter right";
-                if(helmPanel.helm==2)  statusText.text="Rudder right";
+                if(helmPanel.helm==1)  statusText.text="Rudder 5 degrees right";
+                if(helmPanel.helm==2)  statusText.text="Rudder 20 degrees right";
                 if(helmPanel.helm==3)  statusText.text="Rudder full right";
             }
         }
