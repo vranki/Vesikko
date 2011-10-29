@@ -13,6 +13,7 @@ signals:
 
 public slots:
     void setHelm(int h);
+    void setSpeed(int s);
 };
 
 #endif // SUBMARINE_H

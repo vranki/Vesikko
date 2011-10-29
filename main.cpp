@@ -23,10 +23,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QGraphicsObject *object = view.rootObject();
     QDeclarativeItem *item = qobject_cast<QDeclarativeItem*>(object);
     QObject *sub = object->findChild<QObject*>("sub");
+    QObject *helm = item->findChild<QObject*>("helm");
+    QObject *speed = item->findChild<QObject*>("speed");
     Simulation simulation;
-    MapQmlUpdater mqu(0, sub, item);
+    MapQmlUpdater mqu(0, sub, helm);
 
     QObject::connect(&simulation, SIGNAL(subMoved(Submarine*)), &mqu, SLOT(subMoved(Submarine*)));
-    QObject::connect(item, SIGNAL(setHelm(int)), simulation.getSub(), SLOT(setHelm(int)));
+    QObject::connect(helm, SIGNAL(setHelm(int)), simulation.getSub(), SLOT(setHelm(int)));
+    QObject::connect(speed, SIGNAL(setSpeed(int)), simulation.getSub(), SLOT(setSpeed(int)));
     return app.exec();
 }

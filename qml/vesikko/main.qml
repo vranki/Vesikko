@@ -2,14 +2,28 @@ import QtQuick 1.0
 
 Rectangle {
     id: map
-    color: "lightblue"
-    property real scaling: 1.0
-    property int helm: 0
-    signal setHelm(int helm)
-
+    color: "steelblue"
+    property int gridsize: 100
+    property int gridCount: 10
+    ZoomControl {
+        id: zoomcontrol
+        width: parent.width
+        height: parent.height
+    }
+    Row {
+        spacing: 5
+        anchors.left: parent.left
+        anchors.bottom: parent.bottom
+        Helm {
+            objectName: "helm"
+        }
+        SpeedControl {
+            objectName: "speed"
+        }
+    }
     Text {
         id: scaleText
-        text: "Map Scale " + parent.width / parent.scaling + "m"
+        text: "Map Scale " + parent.width / zoomcontrol.scaling + "m"
         anchors.horizontalCenter: parent.horizontalCenter
     }
     Text {
@@ -23,107 +37,29 @@ Rectangle {
         objectName: "sub"
         source: "sub.png"
         smooth: true
+        z: 10
+        transformOrigin: "Center"
         property real rudder: 0
         property real lat: 0
         property real lon: 0
-        x: parent.width / 2 + lat * scaling
-        y: parent.height / 2 + lon * scaling
+        x: parent.width / 2  - width/2
+        y: parent.height / 2 - height/2
     }
-
-    Rectangle {
-        id: helmLeft
-        width: 40
-        height: width
-        anchors.bottom: parent.bottom
-        radius: 5
-        color: "gray"
-        Text {
-            color: "white"
-            text: qsTr("<-")
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: { if(map.helm > -3) map.helm -= 1; map.setHelm(map.helm);
-                if(map.helm==-1)  statusText.text="Rudder quarter left";
-                if(map.helm==-2)  statusText.text="Rudder left";
-                if(map.helm==-3)  statusText.text="Rudder full left";
-            }
-        }
-    }
-    Rectangle {
-        id: helmStraight
-        width: 40
-        height: width
-        anchors.left: helmLeft.right
-        anchors.top: helmLeft.top
-        color: "gray"
-        radius: 5
-        Text {
-            color: "white"
-            text: qsTr("|")
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: { map.helm = 0; map.setHelm(map.helm); statusText.text="Helm straight"}
-        }
-    }
-
-    Rectangle {
-        id: helmRight
-        width: 40
-        height: width
-        radius: 5
-        anchors.left: helmStraight.right
-        anchors.top: helmStraight.top
-        color: "gray"
-        Text {
-            color: "white"
-            text: qsTr("->")
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {if(map.helm < 3)  map.helm += 1; map.setHelm(map.helm);
-                if(map.helm==1)  statusText.text="Rudder quarter right";
-                if(map.helm==2)  statusText.text="Rudder right";
-                if(map.helm==3)  statusText.text="Rudder full right";
+    Grid {
+        x: parent.width/2 - (sub.lat+gridsize*gridCount/2) * zoomcontrol.scaling
+        y: parent.height/2 - (sub.lon+gridsize*gridCount/2) * zoomcontrol.scaling
+        z: 1
+        columns: gridCount
+        Repeater {
+            model: gridCount*gridCount
+            Rectangle {
+                border.color: "blue"
+                border.width: 1
+                color: "#00000000"
+                width: gridsize * zoomcontrol.scaling
+                height: width
             }
         }
     }
 
-    Rectangle {
-        width: 40
-        height: width
-        anchors.right: parent.right
-        color: "gray"
-        radius: 5
-        Text {
-            color: "white"
-            text: qsTr("+")
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: { parent.parent.scaling *= 2.0}
-        }
-    }
-    Rectangle {
-        width: 40
-        height: width
-        anchors.right: parent.right
-        anchors.bottom: parent.bottom
-        radius: 5
-        color: "gray"
-        Text {
-            color: "white"
-            text: qsTr("-")
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: { parent.parent.scaling /= 2.0}
-        }
-    }
 }

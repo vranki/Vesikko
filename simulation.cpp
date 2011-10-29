@@ -10,8 +10,6 @@ Simulation::Simulation(QObject *parent) :
     timer.setInterval(50);
     timer.start();
     time.start();
-    sub.heading = 135;
-    sub.speed = 10;
 }
 
 void Simulation::tick() {

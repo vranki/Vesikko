@@ -9,3 +9,10 @@ Submarine::Submarine(QObject *parent) :
 void Submarine::setHelm(int h){
     helm = h;
 }
+void Submarine::setSpeed(int s){
+    if(s == -1) speed = -5;
+    if(s == 0) speed = 0;
+    if(s == 1) speed = 5;
+    if(s == 2) speed = 10;
+    if(s == 3) speed = 20;
+}
