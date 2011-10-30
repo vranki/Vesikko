@@ -17,6 +17,8 @@ void Simulation::tick() {
     time.start();
     sub.x += sin(sub.heading * (M_PI/180.0)) * sub.speed * dt;
     sub.y -= cos(sub.heading * (M_PI/180.0)) * sub.speed * dt;
+    sub.depth += sub.verticalVelocity * dt;
+    if(sub.depth < 0) sub.depth = 0;
     sub.heading += sub.helm * 3 * dt;
     emit subMoved(&sub);
 }

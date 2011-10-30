@@ -6,7 +6,7 @@ Row {
     id: helmPanel
     Button {
         id: helmLeft
-        text: "<-"
+        text: "↶"
         MouseArea {
             anchors.fill: parent
             onClicked: { if(helmPanel.helm > -3) helmPanel.helm -= 1; helmPanel.setHelm(helmPanel.helm);
@@ -19,7 +19,7 @@ Row {
     Button {
         id: helmStraight
 
-        text: "^"
+        text: "⇑"
         MouseArea {
             anchors.fill: parent
             onClicked: { helmPanel.helm = 0; helmPanel.setHelm(helmPanel.helm); statusText.text="Helm straight"}
@@ -29,7 +29,7 @@ Row {
     Button {
         id: helmRight
 
-        text: "->"
+        text: "↷"
         MouseArea {
             anchors.fill: parent
             onClicked: {if(helmPanel.helm < 3)  helmPanel.helm += 1; helmPanel.setHelm(helmPanel.helm);

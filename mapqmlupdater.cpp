@@ -11,7 +11,9 @@ MapQmlUpdater::MapQmlUpdater(QObject *parent, QObject *s, QObject *h) :
 void MapQmlUpdater::subMoved(Submarine *sub) {
     subObject->setProperty("lat", sub->x);
     subObject->setProperty("lon", sub->y);
+    subObject->setProperty("depth", sub->depth);
     subObject->setProperty("rotation", sub->heading);
+    subObject->setProperty("speed", sub->speed);
 }
 
 double MapQmlUpdater::getHelm() {

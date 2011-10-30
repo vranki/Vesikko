@@ -17,14 +17,14 @@ Row {
     }
 
     Button {
-        text: "-"
+        text: "⇓"
         MouseArea {
             anchors.fill: parent
             onClicked: { if(speed > -1) speed -= 1; updateSpeed()}
         }
     }
     Button {
-        text: "+"
+        text: "⇪"
         MouseArea {
             anchors.fill: parent
             onClicked: { if(speed < 3)speed += 1; updateSpeed()}
