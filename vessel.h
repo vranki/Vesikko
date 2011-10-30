@@ -3,12 +3,13 @@
 
 #include <QObject>
 
-class Submarine : public QObject
+class Vessel : public QObject
 {
     Q_OBJECT
 public:
-    explicit Submarine(QObject *parent = 0);
+    explicit Vessel(QObject *parent, int i);
     double x, y, depth, verticalVelocity, heading, speed, helm;
+    int id, type;
 signals:
 
 public slots:

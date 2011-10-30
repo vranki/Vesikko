@@ -27,11 +27,13 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QObject *speed = item->findChild<QObject*>("speed");
     QObject *depth = item->findChild<QObject*>("depth");
     Simulation simulation;
-    MapQmlUpdater mqu(0, sub, helm);
+    MapQmlUpdater mqu(0, sub, helm, item);
 
-    QObject::connect(&simulation, SIGNAL(subMoved(Submarine*)), &mqu, SLOT(subMoved(Submarine*)));
+    QObject::connect(&simulation, SIGNAL(vesselUpdated(Vessel*)), &mqu, SLOT(vesselUpdated(Vessel*)));
+    QObject::connect(&simulation, SIGNAL(vesselCreated(Vessel*)), &mqu, SLOT(createVessel(Vessel*)));
     QObject::connect(helm, SIGNAL(setHelm(int)), simulation.getSub(), SLOT(setHelm(int)));
     QObject::connect(speed, SIGNAL(setSpeed(int)), simulation.getSub(), SLOT(setSpeed(int)));
     QObject::connect(depth, SIGNAL(setDepthChange(int)), simulation.getSub(), SLOT(setDepthChange(int)));
+    simulation.startSimulation();
     return app.exec();
 }

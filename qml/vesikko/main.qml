@@ -1,4 +1,5 @@
 import QtQuick 1.0
+import "ComponentCreation.js" as ComponentCreation
 
 Rectangle {
     id: map
@@ -6,12 +7,18 @@ Rectangle {
     color: "steelblue"
     property int gridsize: 100
     property int gridCount: 40
+    property real mapCenterLat: sub.lat
+    property real mapCenterLon: sub.lon
+
+    function createVessel(id, lat, lon, type) {
+        ComponentCreation.createVessel(id, lat, lon, type)
+    }
 
     function transformToMapX(lat) {
-        return (lat - sub.lat) * zoomcontrol.scaling + map.width/2
+        return (lat - mapCenterLat) * zoomcontrol.scaling + map.width/2
     }
     function transformToMapY(lon) {
-        return (lon - sub.lon) * zoomcontrol.scaling + map.height/2
+        return (lon - mapCenterLon) * zoomcontrol.scaling + map.height/2
     }
 
     ZoomControl {
@@ -48,21 +55,9 @@ Rectangle {
         anchors.horizontalCenter: parent.horizontalCenter
     }
 
-    Image {
+    Vessel {
         id: sub
         objectName: "sub"
-        source: "sub.png"
-        smooth: true
-        z: 10
-        scale:0.5
-        transformOrigin: "Center"
-        property real rudder: 0
-        property real lat: 0
-        property real lon: 0
-        property real depth: 0
-        property real speed: 0
-        x: parent.width / 2  - width/2
-        y: parent.height / 2 - height/2
     }
 
     Grid {
@@ -76,13 +71,13 @@ Rectangle {
         Timer {
             interval: 500; running: true; repeat: true
             onTriggered: {
-                while(sub.lon < mapGrid.yPos)
+                while(mapCenterLon < mapGrid.yPos)
                     mapGrid.yPos -= gridsize
-                while(sub.lon >= mapGrid.yPos + gridsize)
+                while(mapCenterLon >= mapGrid.yPos + gridsize)
                     mapGrid.yPos += gridsize
-                while(sub.lat < mapGrid.xPos)
+                while(mapCenterLat < mapGrid.xPos)
                     mapGrid.xPos -= gridsize
-                while(sub.lat >= mapGrid.xPos + gridsize)
+                while(mapCenterLat >= mapGrid.xPos + gridsize)
                     mapGrid.xPos += gridsize
             }
         }
@@ -108,5 +103,4 @@ Rectangle {
             }
         }
     }
-
 }

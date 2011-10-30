@@ -35,7 +35,7 @@ symbian:TARGET.CAPABILITY += NetworkServices
 SOURCES += main.cpp \
     simulation.cpp \
     mapqmlupdater.cpp \
-    submarine.cpp
+    vessel.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -44,7 +44,11 @@ qtcAddDeployment()
 HEADERS += \
     simulation.h \
     mapqmlupdater.h \
-    submarine.h
+    vessel.h
+
+
+
+
 
 
 
