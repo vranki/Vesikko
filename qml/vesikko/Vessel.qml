@@ -6,11 +6,11 @@ Image {
     z: 10
     scale:0.5
     transformOrigin: "Center"
+    x: map.transformToMapX(lat)
+    y: map.transformToMapY(lon)
     property real rudder: 0
     property real lat: 0
     property real lon: 0
     property real depth: 0
     property real speed: 0
-    x: map.transformToMapX(lat)
-    y: map.transformToMapY(lon)
 }

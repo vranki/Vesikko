@@ -1,16 +1,19 @@
 import QtQuick 1.0
 
 Item {
-    property real scaling: 1.0
+    property real scaling: 0.01
     function updateScale() {
         statusText.text = "Map Scale " + parent.width / scaling + "m (" + scaling + "x)"
 
-        if(gridsize*scaling < 30) {
+        while(gridsize*scaling < 30) {
             gridsize*=10
-        } else if(gridsize*scaling > 300) {
+        }
+        while(gridsize*scaling > 300) {
             gridsize/=10
         }
     }
+    Component.onCompleted: updateScale()
+
     NumberAnimation on scaling {
         id: scalingAnimation
         to: 1;

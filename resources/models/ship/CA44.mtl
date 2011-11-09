@@ -1,0 +1,14 @@
+newmtl hull
+Ns 20
+Ka 0 0 0
+Kd 0.992157 0.992157 0.992157
+Ks 0.882353 0.882353 0.882353
+map_Kd hull copy.jpg
+d 1
+newmtl super
+Ns 33.3333
+Ka 0 0 0
+Kd 0.992157 0.992157 0.992157
+Ks 0.6 0.6 0.6
+map_Kd super copy.jpg
+d 1

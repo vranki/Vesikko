@@ -7,7 +7,7 @@ function createVessel(id, lat, lon, type) {
     vessel = component.createObject(map);
     vessel.lat = lat;
     vessel.lon = lon;
-    vessel.id = "vessel-" + id
+    vessel.objectName = "vessel-" + id
 }
 
 function deleteVessel(id) {

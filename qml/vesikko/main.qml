@@ -29,7 +29,6 @@ Rectangle {
     }
 
     StatusDisplay {
-
     }
 
     Row {

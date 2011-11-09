@@ -5,6 +5,12 @@ DEPLOYMENTFOLDERS = folder_01
 
 QT += declarative gui
 
+CONFIG += link_pkgconfig
+
+PKGCONFIG += openscenegraph
+
+LIBS += -L/usr/local/lib -losgOcean
+
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
 
@@ -35,7 +41,10 @@ symbian:TARGET.CAPABILITY += NetworkServices
 SOURCES += main.cpp \
     simulation.cpp \
     mapqmlupdater.cpp \
-    vessel.cpp
+    vessel.cpp \
+    periscopeview.cpp \
+    SkyDome.cpp \
+    SphereSegment.cpp
 
 # Please do not modify the following two lines. Required for deployment.
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
@@ -44,7 +53,21 @@ qtcAddDeployment()
 HEADERS += \
     simulation.h \
     mapqmlupdater.h \
-    vessel.h
+    vessel.h \
+    periscopeview.h
+
+OTHER_FILES += \
+    qtc_packaging/debian_harmattan/rules \
+    qtc_packaging/debian_harmattan/README \
+    qtc_packaging/debian_harmattan/manifest.aegis \
+    qtc_packaging/debian_harmattan/copyright \
+    qtc_packaging/debian_harmattan/control \
+    qtc_packaging/debian_harmattan/compat \
+    qtc_packaging/debian_harmattan/changelog\
+    README
+
+
+
 
 
 

@@ -1,4 +1,25 @@
-Vesikko the Submarine Simulator 
+=== Vesikko the Submarine Simulator ===
 
-heavily WIP
+License: GNU GPLv3
+
+Uses osgOcean:
+http://code.google.com/p/osgocean/
+
+Periscope view is based on oceanExample.
+
+
+=== Resource files ===
+
+All should be usable for non-commercial use.
+
+Skybox textures:
+
+From osgOcean's oceanExample, used with permission
+http://code.google.com/p/osgocean/
+
+Ship:
+http://www.sharecg.com/v/55251/browse/5/3D-Model/New-Orleans-class-heavy-cruiser
+
+Torpedo:
+http://www.sharecg.com/v/45793/browse/5/3D-Model/Generic-Missile-Pack
 

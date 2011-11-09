@@ -18,6 +18,7 @@ signals:
     void vesselUpdated(Vessel *v);
     void vesselCreated(Vessel *v);
     void vesselDeleted(Vessel *v);
+    void tickTime(double dt, int total);
 private slots:
     void tick();
 
@@ -25,7 +26,7 @@ public slots:
 
 private:
     QTimer timer;
-    QTime time;
+    QTime time, totalTime;
     Vessel sub;
     QList<Vessel*> otherVessels;
     int lastVesselId;

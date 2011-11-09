@@ -6,7 +6,7 @@ Row {
     id: depthControl
 
     function updateDepth() {
-        if(depthChange==-1) statusText.text = "Ascending"
+        if(depthChange==-1) statusText.text = "Surfacing"
         if(depthChange==0) statusText.text = "Dive Planes Level"
         if(depthChange==1) statusText.text = "Diving"
         depthControl.setDepthChange(depthChange)

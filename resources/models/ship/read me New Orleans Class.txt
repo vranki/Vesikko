@@ -1,0 +1,16 @@
+Readme- New Orleans-class Heavy cruiser
+
+OK, this is a hobby, so the model I've made isn't perfect. Understanding, that I hope you get some enjoyment from it. 
+
+I made this lo-res model to help fill out fleet scenes since superb models of carriers, battleships and destroyers are available- but not every campaign had a dozen battleships prowling around.
+
+The zipped package includes...
+1. simple model in obj format
+2. mapped materials with textures (CA44 USS Vincennes) for hull and superstructure.
+
+Please, personal, non commercial use only. 
+
+(c) Brian Paterson 2011.
+
+
+ 
