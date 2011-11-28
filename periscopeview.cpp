@@ -670,8 +670,7 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
 
 void PeriscopeView::createVessel(Vessel *sub) {
     qDebug() << Q_FUNC_INFO;
-    osg::ref_ptr<osg::Node> ship = osgDB::readNodeFile("models/ship/CA44.obj");
-    //    osg::ref_ptr<osg::Node> ship = osgDB::readNodeFile("resources/boat/boat.3ds");
+    osg::ref_ptr<osg::Node> ship = osgDB::readNodeFile("resources/models/ship/CA44.obj");
     if(ship.valid()) {
         ship->setNodeMask( _oceanScene->getNormalSceneMask() |
                            _oceanScene->getReflectedSceneMask() |
