@@ -20,7 +20,7 @@
 #include <osgOcean/SiltEffect>
 #include <osgOcean/ShaderManager>
 
-#include "vessel.h"
+#include "../simulation/vessel.h"
 
 class SceneEventHandler;
 
@@ -61,6 +61,7 @@ private:
     std::vector<osg::Vec4f>  _waterFogColors;
     SceneEventHandler *eventHandler;
     QMap<int, osg::MatrixTransform*> vesselsTransforms;
+    osg::ref_ptr<osg::Node> ship;
     double scalingFactor;
 };
 

@@ -1,6 +1,6 @@
 #ifndef MAPQMLUPDATER_H
 #define MAPQMLUPDATER_H
-#include "vessel.h"
+#include "../simulation/vessel.h"
 #include <QObject>
 
 class MapQmlUpdater : public QObject

@@ -1,5 +1,5 @@
 #include "mapqmlupdater.h"
-#include "vessel.h"
+#include "../simulation/vessel.h"
 #include <QVariant>
 #include <QDebug>
 

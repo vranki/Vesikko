@@ -560,8 +560,9 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
     bool testCollision = false;
     bool disableShaders = false;
     //    osg::ref_ptr<osg::Node> loadedModel = osgDB::readNodeFiles(parser);
-
-    viewer.setUpViewInWindow( 150,150,1024,768, 0 );
+    int width = 400;
+    int height = 300;
+    viewer.setUpViewInWindow( 640,150,width,height, 0 );
     viewer.addEventHandler( new osgViewer::StatsHandler );
 
     osgOcean::ShaderManager::instance().enableShaders(!disableShaders);
@@ -574,7 +575,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
 
     viewer.addEventHandler( new osgViewer::HelpHandler );
     viewer.getCamera()->setName("MainCamera");
-    viewer.getCamera()->setProjectionMatrixAsPerspective(32, 16.f/9.f, 0.5, WORLD_RADIUS);
+    viewer.getCamera()->setProjectionMatrixAsPerspective(32, (float)width/(float)height, 0.1, WORLD_RADIUS);
     eventHandler = new SceneEventHandler(viewer);
     viewer.addEventHandler( eventHandler );
 
@@ -614,7 +615,14 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
         }
     }
         */
-
+    ship = osgDB::readNodeFile("resources/models/ship/CA44.obj");
+    if(!ship.valid()) {
+        qDebug() << Q_FUNC_INFO << "can't load ship";
+    } else {
+    ship->setNodeMask( _oceanScene->getNormalSceneMask() |
+                       _oceanScene->getReflectedSceneMask() |
+                       _oceanScene->getRefractedSceneMask() );
+    }
     viewer.setSceneData( root );
     //    viewer.setCameraManipulator( 0 );
 
@@ -670,31 +678,20 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
 
 void PeriscopeView::createVessel(Vessel *sub) {
     qDebug() << Q_FUNC_INFO;
-    osg::ref_ptr<osg::Node> ship = osgDB::readNodeFile("resources/models/ship/CA44.obj");
-    if(ship.valid()) {
-        ship->setNodeMask( _oceanScene->getNormalSceneMask() |
-                           _oceanScene->getReflectedSceneMask() |
-                           _oceanScene->getRefractedSceneMask() );
 
-        osg::ref_ptr<osg::MatrixTransform> shipTransform = new osg::MatrixTransform;
-        shipTransform->addChild(ship.get());
-        scalingFactor = 500.f / ship.get()->getBound().radius();
-        osg::Matrix shipMatrix = osg::Matrix::scale(scalingFactor, scalingFactor, scalingFactor);
-        shipMatrix *= shipMatrix.rotate(osg::DegreesToRadians(0.0), osg::Vec3(0,1,0), // roll
-                                        osg::DegreesToRadians(0.0), osg::Vec3(1,0,0) , // pitch
-                                        osg::DegreesToRadians(90.0 - sub->heading), osg::Vec3(0,0,1) );
-        shipMatrix *= shipMatrix.translate(osg::Vec3f(sub->x, -sub->y,sub->depth));
-        shipTransform->setMatrix(shipMatrix);
+    osg::ref_ptr<osg::MatrixTransform> shipTransform = new osg::MatrixTransform;
+    shipTransform->addChild(ship.get());
+    scalingFactor = 500.f / ship.get()->getBound().radius();
+    osg::Matrix shipMatrix = osg::Matrix::scale(scalingFactor, scalingFactor, scalingFactor);
+    shipMatrix *= shipMatrix.rotate(osg::DegreesToRadians(0.0), osg::Vec3(0,1,0), // roll
+                                    osg::DegreesToRadians(0.0), osg::Vec3(1,0,0) , // pitch
+                                    osg::DegreesToRadians(90.0 - sub->heading), osg::Vec3(0,0,1) );
+    shipMatrix *= shipMatrix.translate(osg::Vec3f(sub->x, -sub->y,sub->depth));
+    shipTransform->setMatrix(shipMatrix);
 
-        _oceanScene->addChild(shipTransform.get());
+    _oceanScene->addChild(shipTransform.get());
 
-        qDebug() << Q_FUNC_INFO << "loaded ship" <<  ship.get()->getBound().radius();
-        vesselsTransforms[sub->id]=shipTransform.get();
-    }
-    else
-    {
-        qDebug() << "can't load ship";
-    }
+    vesselsTransforms[sub->id]=shipTransform.get();
 }
 
 void PeriscopeView::vesselDeleted(Vessel *sub) {
