@@ -13,7 +13,9 @@ Rectangle {
     function createVessel(id, lat, lon, type) {
         ComponentCreation.createVessel(id, lat, lon, type)
     }
-
+    function deleteVessel(id) {
+        ComponentCreation.deleteVessel(id)
+    }
     function transformToMapX(lat) {
         return (lat - mapCenterLat) * zoomcontrol.scaling + map.width/2
     }

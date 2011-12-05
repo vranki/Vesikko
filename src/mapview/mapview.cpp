@@ -1,21 +1,20 @@
 #include <QDebug>
 #include <QGraphicsObject>
 #include <QDeclarativeItem>
+#include <QCoreApplication>
 #include "mapview.h"
 #include "qmlapplicationviewer.h"
 
-MapView::MapView(QObject *parent) :
-    QObject(parent)
-{
-    view.setSource(QUrl::fromLocalFile("src/mapview/qml/vesikko/main.qml"));
-    view.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+MapView::MapView(QObject *parent) : QObject(parent), mainWin(), mqu(this) {
+    view = new QDeclarativeView(&mainWin);
+    view->setSource(QUrl::fromLocalFile("src/mapview/qml/vesikko/main.qml"));
+    view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
     mainWin.setGeometry(QRect(0,0,500,500));
-    mainWin.setCentralWidget(&view);
+    mainWin.setCentralWidget(view);
     mainWin.setWindowTitle("Vesikko");
     mainWin.show();
-    view.show();
 
-    QGraphicsObject *object = view.rootObject();
+    QGraphicsObject *object = view->rootObject();
     if(!object) {
         qDebug() << "No root object - QML missing?";
         return;
@@ -33,5 +32,7 @@ MapView::MapView(QObject *parent) :
     QObject::connect(speed, SIGNAL(setSpeed(int)), this, SIGNAL(setSpeed(int)));
     QObject::connect(depth, SIGNAL(setDepthChange(int)), this, SIGNAL(setDepthChange(int)));
 
-    mqu = new MapQmlUpdater(this, sub, helm, object);
+    mqu.init(sub, helm, object);
+
+    connect(&mainWin, SIGNAL(destroyed()), QCoreApplication::instance(), SLOT(quit()));
 }

@@ -3,9 +3,15 @@
 #include <QVariant>
 #include <QDebug>
 
-MapQmlUpdater::MapQmlUpdater(QObject *parent, QObject *s, QObject *h, QObject *v) :
-    QObject(parent), subObject(s), helmObject(h), vesselsObject(v)
+MapQmlUpdater::MapQmlUpdater(QObject *parent) :
+    QObject(parent)
 {
+}
+
+void MapQmlUpdater::init(QObject *s, QObject *h, QObject *v) {
+    subObject = s;
+    helmObject = h;
+    vesselsObject = v;
 }
 
 void MapQmlUpdater::vesselUpdated(Vessel *vessel) {
@@ -32,6 +38,8 @@ void MapQmlUpdater::createVessel(Vessel *sub) {
                               Q_ARG(QVariant, sub->y),
                               Q_ARG(QVariant, sub->type));
 }
+
 void MapQmlUpdater::vesselDeleted(Vessel *sub) {
     qDebug() << Q_FUNC_INFO;
+    QMetaObject::invokeMethod(vesselsObject, "deleteVessel", Q_ARG(QVariant, sub->id));
 }

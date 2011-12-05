@@ -1,5 +1,6 @@
 TEMPLATE=lib
 TARGET=periscopeview
+CONFIG += staticlib
 CONFIG += link_pkgconfig
 CONFIG += create_prl
 PKGCONFIG += openscenegraph

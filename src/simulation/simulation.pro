@@ -8,14 +8,21 @@ CONFIG += link_prl
 # If periscopeview included
 CONFIG += link_pkgconfig
 PKGCONFIG += openscenegraph
-LIBS += -L/usr/local/lib -losgOcean
-LIBS += -L../periscopeview -lperiscopeview
+LIBS += -losgOcean
+#LIBS += -static -L../periscopeview -lperiscopeview -dynamic
+#LIBS += -static -L../mapview -lmapview -dynamic
+LIBS +=  ../periscopeview/libperiscopeview.a
+LIBS +=  ../mapview/libmapview.a
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \
     simulation.cpp \
-    vessel.cpp
+    vessel.cpp \
+    torpedo.cpp
 
 HEADERS += \
     simulation.h \
-    vessel.h
+    vessel.h \
+    torpedo.h
+
+

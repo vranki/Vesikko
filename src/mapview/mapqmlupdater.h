@@ -7,7 +7,8 @@ class MapQmlUpdater : public QObject
 {
     Q_OBJECT
 public:
-    explicit MapQmlUpdater(QObject *parent, QObject *s, QObject *h, QObject *v);
+    explicit MapQmlUpdater(QObject *parent);
+    void init(QObject *s, QObject *h, QObject *v);
 signals:
 
 public slots:

@@ -12,7 +12,7 @@ class MapView : public QObject
     Q_OBJECT
 public:
     explicit MapView(QObject *parent = 0);
-    MapQmlUpdater *mqu;
+    MapQmlUpdater mqu;
 
 signals:
     void setHelm(int);
@@ -21,7 +21,7 @@ signals:
 
 public slots:
 private:
-    QDeclarativeView view;
+    QDeclarativeView *view;
     QMainWindow mainWin;
 };
 

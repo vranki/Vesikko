@@ -21,8 +21,9 @@ signals:
     void tickTime(double dt, int total);
 private slots:
     void tick();
-
+    void vesselDestroyed();
 public slots:
+    void fireTorpedo(double direction);
 
 private:
     QTimer timer;

@@ -1,4 +1,5 @@
 #include "simulation.h"
+#include "torpedo.h"
 #include <QDebug>
 
 Simulation::Simulation(QObject *parent) : QObject(parent), lastVesselId(0), sub(this, 0)
@@ -57,6 +58,7 @@ void Simulation::startSimulation() {
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
     emit vesselCreated(v);
+    fireTorpedo(42);
 }
 
 void Simulation::tick() {
@@ -67,4 +69,21 @@ void Simulation::tick() {
 
 Vessel *Simulation::getSub() {
     return &sub;
+}
+
+void Simulation::fireTorpedo(double direction) {
+    Vessel *v = new Torpedo(this, ++lastVesselId);
+    v->x = sub.x;
+    v->y = sub.y;
+    v->heading = sub.heading;
+    otherVessels.append(v);
+    connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
+    connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
+    connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
+    emit vesselCreated(v);
+}
+void Simulation::vesselDestroyed() {
+    Vessel *v = static_cast<Vessel*> (sender());
+    emit vesselDeleted(v);
+    otherVessels.removeAll(v);
 }

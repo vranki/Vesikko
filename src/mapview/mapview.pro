@@ -1,5 +1,6 @@
 TEMPLATE=lib
 TARGET=mapview
+CONFIG += staticlib
 CONFIG += create_prl
 QT += declarative gui
 
@@ -17,5 +18,4 @@ qtcAddDeployment()
 HEADERS += mapqmlupdater.h \
     mapview.h
 
-
-
+OTHER_FILES += qml/vesikko/*
