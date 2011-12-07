@@ -10,6 +10,8 @@ Rectangle {
     property real mapCenterLat: sub.lat
     property real mapCenterLon: sub.lon
 
+    signal deleteVesselSignal(int id)
+
     function createVessel(id, lat, lon, type) {
         ComponentCreation.createVessel(id, lat, lon, type)
     }

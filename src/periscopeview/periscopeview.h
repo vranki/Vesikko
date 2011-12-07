@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QMap>
+#include <QTimer>
+
 #include <osg/Node>
 #include <osg/Group>
 #include <osg/Geode>
@@ -21,6 +23,7 @@
 #include <osgOcean/ShaderManager>
 
 #include "../simulation/vessel.h"
+#include "explosion.h"
 
 class SceneEventHandler;
 
@@ -30,13 +33,16 @@ class PeriscopeView : public QObject
 public:
     explicit PeriscopeView(QObject *parent = 0);
 signals:
-
+    void collisionBetween(Vessel *v, Vessel *v2);
 public slots:
     void tick(double dt, int total);
     void vesselUpdated(Vessel *v);
     void createVessel(Vessel *v);
     void vesselDeleted(Vessel *v);
     void setPeriscopeDirection(double dir);
+    void addExplosion(double x, double y, double intensity);
+private slots:
+    void killExplosion();
 private:
     void pollKeyboard();
     double periscopeDir;
@@ -60,9 +66,10 @@ private:
     std::vector<osg::Vec4f>  _sunDiffuse;
     std::vector<osg::Vec4f>  _waterFogColors;
     SceneEventHandler *eventHandler;
-    QMap<int, osg::MatrixTransform*> vesselsTransforms;
-    osg::ref_ptr<osg::Node> ship;
-    double scalingFactor;
+    QMap<Vessel *, osg::MatrixTransform*> vesselsTransforms;
+    osg::ref_ptr<osg::Node> ship, torpedo;
+    Explosion explosion;
+    QTimer killExplosionTimer;
 };
 
 #endif // PERISCOPEVIEW_H

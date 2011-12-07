@@ -184,7 +184,7 @@ public:
                 float windSpeed = 12.f,
                 float depth = 10000.f,
                 float reflectionDamping = 0.35f,
-                float scale = 1e-8,
+                float scale = 1e-22,
                 bool  isChoppy = true,
                 float choppyFactor = -2.5f,
                 float crestFoamHeight = 2.2f ):
@@ -575,7 +575,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
 
     viewer.addEventHandler( new osgViewer::HelpHandler );
     viewer.getCamera()->setName("MainCamera");
-    viewer.getCamera()->setProjectionMatrixAsPerspective(32, (float)width/(float)height, 0.1, WORLD_RADIUS);
+    viewer.getCamera()->setProjectionMatrixAsPerspective(32, (float)width/(float)height, 2, WORLD_RADIUS);
     eventHandler = new SceneEventHandler(viewer);
     viewer.addEventHandler( eventHandler );
 
@@ -615,18 +615,29 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
         }
     }
         */
-    ship = osgDB::readNodeFile("resources/models/ship/CA44.obj");
+    ship = osgDB::readNodeFile("resources/models/ship.obj");
     if(!ship.valid()) {
-        qDebug() << Q_FUNC_INFO << "can't load ship";
+        qDebug() << Q_FUNC_INFO << "can't load ship resources/models/ship.obj";
     } else {
-    ship->setNodeMask( _oceanScene->getNormalSceneMask() |
-                       _oceanScene->getReflectedSceneMask() |
-                       _oceanScene->getRefractedSceneMask() );
+        ship->setNodeMask( _oceanScene->getNormalSceneMask() |
+                           _oceanScene->getReflectedSceneMask() |
+                           _oceanScene->getRefractedSceneMask() );
     }
-    viewer.setSceneData( root );
-    //    viewer.setCameraManipulator( 0 );
+    torpedo = osgDB::readNodeFile("resources/models/torpedo.3ds");
+    if(!torpedo.valid()) {
+        qDebug() << Q_FUNC_INFO << "can't load torpedo";
+    } else {
+        torpedo->setNodeMask( _oceanScene->getNormalSceneMask() |
+                              _oceanScene->getReflectedSceneMask() |
+                              _oceanScene->getRefractedSceneMask() );
+    }
 
+    _oceanScene->addChild(&explosion.getGroup());
+    _oceanScene->addChild(&explosion.getPat());
+    explosion.getPat().setPosition(osg::Vec3f(0, 50, 0));
+    viewer.setSceneData( root );
     viewer.realize();
+    connect(&killExplosionTimer, SIGNAL(timeout()), this, SLOT(killExplosion()));
 }
 
 void PeriscopeView::tick(double dt, int total) {
@@ -636,6 +647,25 @@ void PeriscopeView::tick(double dt, int total) {
     subPitch = sin(totalD*0.9)*0.3;
     pollKeyboard();
     periscopeDir += 50*eventHandler->getRotation()*dt;
+
+    QMap<Vessel *, Vessel *> collidedVessels;
+    foreach(Vessel *v, vesselsTransforms.keys()) {
+        osg::MatrixTransform* t =vesselsTransforms[v];
+        if(v->type==2) {
+            foreach(Vessel *v2, vesselsTransforms.keys()) {
+                if(v != v2 && v2->type != 2) {
+                    osg::MatrixTransform* t2 =vesselsTransforms[v2];
+                    if(t->getBound().intersects(t2->getBound())) {
+                        collidedVessels.insert(v, v2);
+                    }
+                }
+            }
+        }
+    }
+    foreach(Vessel *t, collidedVessels.keys()) {
+        emit collisionBetween(t, collidedVessels.value(t));
+    }
+
     if( !viewer.done() )
         viewer.frame();
 }
@@ -666,36 +696,36 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
         myCameraMatrix = myCameraMatrix*cameraRotation;
         viewer.getCamera()->setViewMatrix(myCameraMatrix);
     } else {
-        osg::MatrixTransform *transform = vesselsTransforms[vessel->id];
-        osg::Matrix shipMatrix = osg::Matrix::scale(scalingFactor, scalingFactor, scalingFactor);
-        shipMatrix *= shipMatrix.rotate(osg::DegreesToRadians(0.0), osg::Vec3(0,1,0), // roll
-                                        osg::DegreesToRadians(0.0), osg::Vec3(1,0,0) , // pitch
-                                        osg::DegreesToRadians(90.0 - vessel->heading), osg::Vec3(0,0,1) );
-        shipMatrix *= shipMatrix.translate(osg::Vec3f(vessel->x, -vessel->y,-300 + vessel->depth));
+        double zeroDepth = 0;
+        if(vessel->type==2) zeroDepth -= 0.5;
+        osg::MatrixTransform *transform = vesselsTransforms[vessel];
+        osg::Matrixd shipMatrix = osg::Matrix::rotate(osg::DegreesToRadians(0.0), osg::Vec3(0,1,0), // roll
+                                                      osg::DegreesToRadians(0.0), osg::Vec3(1,0,0) , // pitch
+                                                      osg::DegreesToRadians(- vessel->heading), osg::Vec3(0,0,1) );
+        shipMatrix *= shipMatrix.translate(osg::Vec3f(vessel->x, -vessel->y, -vessel->depth + zeroDepth));
         transform->setMatrix(shipMatrix);
     }
 }
 
 void PeriscopeView::createVessel(Vessel *sub) {
-    qDebug() << Q_FUNC_INFO;
+    qDebug() << Q_FUNC_INFO << "type " << sub->type;
 
     osg::ref_ptr<osg::MatrixTransform> shipTransform = new osg::MatrixTransform;
-    shipTransform->addChild(ship.get());
-    scalingFactor = 500.f / ship.get()->getBound().radius();
-    osg::Matrix shipMatrix = osg::Matrix::scale(scalingFactor, scalingFactor, scalingFactor);
-    shipMatrix *= shipMatrix.rotate(osg::DegreesToRadians(0.0), osg::Vec3(0,1,0), // roll
-                                    osg::DegreesToRadians(0.0), osg::Vec3(1,0,0) , // pitch
-                                    osg::DegreesToRadians(90.0 - sub->heading), osg::Vec3(0,0,1) );
-    shipMatrix *= shipMatrix.translate(osg::Vec3f(sub->x, -sub->y,sub->depth));
-    shipTransform->setMatrix(shipMatrix);
-
+    if(sub->type==1) {
+        shipTransform->addChild(ship.get());
+    } else if(sub->type==2) {
+        shipTransform->addChild(torpedo.get());
+    }
     _oceanScene->addChild(shipTransform.get());
 
-    vesselsTransforms[sub->id]=shipTransform.get();
+    vesselsTransforms[sub]=shipTransform.get();
 }
 
 void PeriscopeView::vesselDeleted(Vessel *sub) {
     qDebug() << Q_FUNC_INFO;
+    _oceanScene->removeChild(vesselsTransforms[sub]);
+    vesselsTransforms[sub]->unref();
+    Q_ASSERT(vesselsTransforms.remove(sub));
 }
 
 void PeriscopeView::pollKeyboard() {
@@ -706,4 +736,14 @@ void PeriscopeView::pollKeyboard() {
         if(zoomHigh) fov = 8;
         viewer.getCamera()->setProjectionMatrixAsPerspective(fov, 16.f/9.f, 0.3, WORLD_RADIUS);
     }
+}
+void PeriscopeView::addExplosion(double x, double y, double intensity) {
+    explosion.getPat().setPosition(osg::Vec3f(x, -y, 0));
+    killExplosionTimer.setInterval(500);
+    killExplosionTimer.start();
+    explosion.setEnabled(true);
+}
+
+void PeriscopeView::killExplosion() {
+    explosion.setEnabled(false);
 }

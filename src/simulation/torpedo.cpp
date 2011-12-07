@@ -3,6 +3,7 @@
 Torpedo::Torpedo(QObject *parent, int i) : Vessel(parent, i)
 {
     type = 2;
-    speed = 50;
-    QTimer::singleShot(5000, this, SLOT(deleteLater()));
+    speedCommand = 50;
+    acceleration = 5;
+    QTimer::singleShot(50000, this, SLOT(deleteLater()));
 }

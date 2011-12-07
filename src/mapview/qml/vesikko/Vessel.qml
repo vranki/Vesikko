@@ -1,6 +1,7 @@
 import QtQuick 1.0
 
 Image {
+    signal deleteVesselSignal(int id)
     source: "sub.png"
     smooth: true
     z: 10
@@ -13,4 +14,11 @@ Image {
     property real lon: 0
     property real depth: 0
     property real speed: 0
+    property int vesselId: -1
+    onDeleteVesselSignal: {
+        if(id == vesselId) {
+            visible = false;
+            destroy()
+        }
+    }
 }

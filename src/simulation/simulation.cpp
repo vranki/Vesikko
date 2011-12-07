@@ -20,11 +20,12 @@ void Simulation::startSimulation() {
     v->y = -1000;
     v->heading = 90;
     v->type = 1;
-    v->speed =30;
-    v->setHelm(3);
+    v->speed =10;
+    v->setHelm(1);
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
+    connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
     emit vesselCreated(v);
     v = new Vessel(this, ++lastVesselId);
     v->x = 2000;
@@ -35,6 +36,7 @@ void Simulation::startSimulation() {
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
+    connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
     emit vesselCreated(v);
     v = new Vessel(this, ++lastVesselId);
     v->x = -500;
@@ -46,6 +48,7 @@ void Simulation::startSimulation() {
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
+    connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
     emit vesselCreated(v);
     v = new Vessel(this, ++lastVesselId);
     v->x = 3000;
@@ -53,12 +56,12 @@ void Simulation::startSimulation() {
     v->heading = 70;
     v->type = 1;
     v->speed =5;
-    v->setHelm(-2);
+    v->setHelm(-1);
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
+    connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
     emit vesselCreated(v);
-    fireTorpedo(42);
 }
 
 void Simulation::tick() {
@@ -75,15 +78,37 @@ void Simulation::fireTorpedo(double direction) {
     Vessel *v = new Torpedo(this, ++lastVesselId);
     v->x = sub.x;
     v->y = sub.y;
-    v->heading = sub.heading;
+    v->heading = direction;
+    v->speed = sub.speed + 10;
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
     connect(v, SIGNAL(destroyed()), this, SLOT(vesselDestroyed()));
     emit vesselCreated(v);
 }
+
 void Simulation::vesselDestroyed() {
     Vessel *v = static_cast<Vessel*> (sender());
     emit vesselDeleted(v);
     otherVessels.removeAll(v);
+}
+
+void Simulation::collisionBetween(Vessel *v, Vessel *v2) {
+    if(!v || !v2) return;
+    if(v->type==2 && v2->type==2) return;
+    Vessel *torpedo, *target;
+    torpedo = 0;
+    target = 0;
+    if(v->type==2) {
+        torpedo = v;
+        target = v2;
+    }
+    if(v2->type==2) {
+        torpedo = v2;
+        target = v;
+    }
+    qDebug() << "Torpedo " << torpedo << "hit ship " << target;
+    emit explosion(torpedo->x, torpedo->y, 1);
+    delete torpedo;
+    target->wasHitByTorpedo();
 }
