@@ -1,0 +1,24 @@
+# Blender MTL File: ''
+# Material Count: 2
+newmtl hull_hull_copy.jpg
+Ns 17.647059
+Ka 0.000000 0.000000 0.000000
+Kd 0.793726 0.793726 0.793726
+Ks 0.441177 0.441177 0.441177
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd ship/hull copy.jpg
+
+
+newmtl super_super_copy.jpg
+Ns 29.411765
+Ka 0.000000 0.000000 0.000000
+Kd 0.793726 0.793726 0.793726
+Ks 0.300000 0.300000 0.300000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd ship/super copy.jpg
+
+
