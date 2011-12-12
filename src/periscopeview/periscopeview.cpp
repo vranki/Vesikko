@@ -632,7 +632,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
                            _oceanScene->getReflectedSceneMask() |
                            _oceanScene->getRefractedSceneMask() );
     }
-    torpedo = osgDB::readNodeFile("resources/models/torpedo.3ds");
+    torpedo = osgDB::readNodeFile("resources/models/torpedo.obj");
     if(!torpedo.valid()) {
         qDebug() << Q_FUNC_INFO << "can't load torpedo";
     } else {
@@ -721,15 +721,15 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
 void PeriscopeView::createVessel(Vessel *sub) {
     qDebug() << Q_FUNC_INFO << "type " << sub->type;
 
-    osg::ref_ptr<osg::MatrixTransform> shipTransform = new osg::MatrixTransform;
+    osg::ref_ptr<osg::MatrixTransform> vesselTransform = new osg::MatrixTransform;
     if(sub->type==1) {
-        shipTransform->addChild(ship.get());
+        vesselTransform->addChild(ship.get());
     } else if(sub->type==2) {
-        shipTransform->addChild(torpedo.get());
+        vesselTransform->addChild(torpedo.get());
     }
-    _oceanScene->addChild(shipTransform.get());
+    _oceanScene->addChild(vesselTransform.get());
 
-    vesselsTransforms[sub]=shipTransform.get();
+    vesselsTransforms[sub]=vesselTransform.get();
 }
 
 void PeriscopeView::vesselDeleted(Vessel *sub) {
