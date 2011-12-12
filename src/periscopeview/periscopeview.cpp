@@ -75,7 +75,7 @@ public:
     }
 };
 
-
+/*
 class BoatPositionCallback : public osg::NodeCallback
 {
 public:
@@ -114,7 +114,7 @@ public:
 
     osg::observer_ptr<osgOcean::OceanScene> _oceanScene;
 };
-
+*/
 // ----------------------------------------------------
 //                  Scoped timer
 // ----------------------------------------------------
@@ -146,6 +146,7 @@ private:
     osg::Timer_t _start;
     bool _endline_after_time;
 };
+
 
 // ----------------------------------------------------
 //                  Scene Model
@@ -485,7 +486,7 @@ public:
 class SceneEventHandler : public osgGA::GUIEventHandler
 {
 public:
-    SceneEventHandler( osgViewer::Viewer& viewer  ) : _viewer(viewer)
+    SceneEventHandler( osgViewer::Viewer& viewer, osgOcean::OceanScene * scene, TextHUD *hud) : _viewer(viewer), _scene(scene), _hud(hud)
     {
         rotation = 0;
         toggleZoom = false;
@@ -519,6 +520,12 @@ public:
                 return false;
             }
         }
+        case(osgGA::GUIEventAdapter::RESIZE):
+        {
+            qDebug() << "resize " << ea.getWindowWidth() << ea.getWindowHeight();
+            _scene->setScreenDims(osg::Vec2s(ea.getWindowWidth(), ea.getWindowHeight()));
+            _hud->getHudCamera()->setViewport(0,0,ea.getWindowWidth(), ea.getWindowHeight());
+        }
         }
         return false;
     }
@@ -536,6 +543,8 @@ public:
 
 private:
     osgViewer::Viewer& _viewer;
+    osgOcean::OceanScene * _scene;
+    TextHUD *_hud;
     int rotation;
     bool toggleZoom;
 };
@@ -564,7 +573,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
     int height = 300;
     viewer.setUpViewInWindow( 640,150,width,height, 0 );
     viewer.addEventHandler( new osgViewer::StatsHandler );
-
+    hud = new TextHUD(this);
     osgOcean::ShaderManager::instance().enableShaders(!disableShaders);
     osg::ref_ptr<SceneModel> scene = new SceneModel(windDirection, windSpeed, depth, reflectionDamping, scale, isChoppy, choppyFactor, crestFoamHeight);
 
@@ -573,12 +582,11 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
     viewer.addEventHandler(scene->getOceanSceneEventHandler());
     viewer.addEventHandler(scene->getOceanSurface()->getEventHandler());
 
-    viewer.addEventHandler( new osgViewer::HelpHandler );
+//    viewer.addEventHandler( new osgViewer::HelpHandler );
     viewer.getCamera()->setName("MainCamera");
     viewer.getCamera()->setProjectionMatrixAsPerspective(32, (float)width/(float)height, 2, WORLD_RADIUS);
-    eventHandler = new SceneEventHandler(viewer);
+    eventHandler = new SceneEventHandler(viewer, _oceanScene, hud);
     viewer.addEventHandler( eventHandler );
-
     osg::Group* root = new osg::Group;
     root->addChild( scene->getScene() );
     /*
@@ -615,6 +623,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
         }
     }
         */
+    root->addChild( hud->getHudCamera() );
     ship = osgDB::readNodeFile("resources/models/ship.obj");
     if(!ship.valid()) {
         qDebug() << Q_FUNC_INFO << "can't load ship resources/models/ship.obj";
@@ -635,6 +644,7 @@ PeriscopeView::PeriscopeView(QObject *parent) : QObject(parent)
     _oceanScene->addChild(&explosion.getGroup());
     _oceanScene->addChild(&explosion.getPat());
     explosion.getPat().setPosition(osg::Vec3f(0, 50, 0));
+
     viewer.setSceneData( root );
     viewer.realize();
     connect(&killExplosionTimer, SIGNAL(timeout()), this, SLOT(killExplosion()));
@@ -695,6 +705,7 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
                                   osg::DegreesToRadians(subRoll), osg::Vec3(0,0,1) ); //
         myCameraMatrix = myCameraMatrix*cameraRotation;
         viewer.getCamera()->setViewMatrix(myCameraMatrix);
+        hud->setHeading(vessel->heading + periscopeDir + subYaw);
     } else {
         double zeroDepth = 0;
         if(vessel->type==2) zeroDepth -= 0.5;

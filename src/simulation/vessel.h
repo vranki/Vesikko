@@ -19,7 +19,7 @@ public slots:
     void setHelm(int h);
     void setSpeed(int s);
     void setDepthChange(int s);
-    void tickTime(double dt, int total);
+    virtual void tickTime(double dt, int total);
     void wasHitByTorpedo();
 };
 

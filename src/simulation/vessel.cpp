@@ -5,7 +5,7 @@
 Vessel::Vessel(QObject *parent, int i) :
     QObject(parent), id(i)
 {
-    x = y = depth = heading = speed = helm = verticalVelocity = 0;
+    x = y = depth = heading = speed = helm = verticalVelocity = speedCommand = 0;
     type = 0;
     acceleration = 1.0;
 }
@@ -45,6 +45,9 @@ void Vessel::tickTime(double dt, int total) {
 
     if(depth > 50)
         deleteLater();
+
+    Q_ASSERT(speed < 51);
+    Q_ASSERT(speed > -20);
 
     emit vesselUpdated(this);
 }

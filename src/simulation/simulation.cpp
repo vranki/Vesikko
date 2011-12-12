@@ -67,6 +67,10 @@ void Simulation::startSimulation() {
 void Simulation::tick() {
     double dt = time.elapsed() / 1000.0f;
     time.start();
+    if(dt > 0.2) {
+        qDebug() << "Skipping frame, dt: " << dt;
+        dt = 0;
+    }
     emit tickTime(dt, totalTime.elapsed());
 }
 
@@ -75,11 +79,12 @@ Vessel *Simulation::getSub() {
 }
 
 void Simulation::fireTorpedo(double direction) {
-    Vessel *v = new Torpedo(this, ++lastVesselId);
+    Torpedo *v = new Torpedo(this, ++lastVesselId);
     v->x = sub.x;
     v->y = sub.y;
-    v->heading = direction;
+    v->heading = sub.heading;
     v->speed = sub.speed + 10;
+    v->headingCommand = direction;
     otherVessels.append(v);
     connect(this, SIGNAL(tickTime(double,int)), v, SLOT(tickTime(double,int)));
     connect(v, SIGNAL(vesselUpdated(Vessel*)), this, SIGNAL(vesselUpdated(Vessel*)));
@@ -96,6 +101,8 @@ void Simulation::vesselDestroyed() {
 void Simulation::collisionBetween(Vessel *v, Vessel *v2) {
     if(!v || !v2) return;
     if(v->type==2 && v2->type==2) return;
+    Q_ASSERT(otherVessels.contains(v));
+    Q_ASSERT(otherVessels.contains(v2));
     Vessel *torpedo, *target;
     torpedo = 0;
     target = 0;

@@ -14,7 +14,8 @@ SOURCES += periscopeview.cpp \
     explosion.cpp
 
 HEADERS += periscopeview.h \
-    explosion.h
+    explosion.h\
+    TextHUD.h
 
 
 

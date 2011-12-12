@@ -6,6 +6,7 @@
 #include <QTimer>
 
 #include <osg/Node>
+#include <osgText/Text>
 #include <osg/Group>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -24,6 +25,7 @@
 
 #include "../simulation/vessel.h"
 #include "explosion.h"
+#include "TextHUD.h"
 
 class SceneEventHandler;
 
@@ -70,6 +72,7 @@ private:
     osg::ref_ptr<osg::Node> ship, torpedo;
     Explosion explosion;
     QTimer killExplosionTimer;
+    TextHUD *hud;
 };
 
 #endif // PERISCOPEVIEW_H
