@@ -1,0 +1,13 @@
+# Blender MTL File: 'torpedo.blend'
+# Material Count: 1
+newmtl Metalli_tekstuuri.png
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.078157 0.106287 0.087105
+Ks 0.257875 0.257875 0.257875
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /home/cosmo/gvfs/SFTP for cosmo on vatnajokull.local/varma/3d/torpedo/tekstuuri.png
+
+
