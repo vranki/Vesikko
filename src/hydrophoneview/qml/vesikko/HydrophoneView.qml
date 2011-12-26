@@ -5,14 +5,26 @@ Rectangle {
     property real hydrophoneDirection: 0
     property real hydrophoneRotateSpeed: 0
     property real subDirection: 0
+    signal hydrophoneDirectionChangedSignal(double dir)
     color: "black"
+
+    function subDirectionChanged(dir) {
+        subDirection = dir
+    }
 
     Timer {
         id: rotateTimer
         interval: 10
         running: false
         repeat: true
-        onTriggered: hydrophoneDirection += hydrophoneRotateSpeed
+        onTriggered: {
+            if(hydrophoneRotateSpeed != 0) {
+                hydrophoneDirection += hydrophoneRotateSpeed
+                while(hydrophoneDirection >= 360) hydrophoneDirection -= 360;
+                while(hydrophoneDirection < 0) hydrophoneDirection += 360;
+                hydrophoneView.hydrophoneDirectionChangedSignal(hydrophoneDirection)
+            }
+        }
     }
 
     Image {
@@ -36,8 +48,8 @@ Rectangle {
     }
     Rectangle {
         color: "gray"
-        width: 200
-        height:50
+        width: 150
+        height:40
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         MouseArea {

@@ -3,6 +3,7 @@
 #include <QGraphicsObject>
 #include <QDeclarativeItem>
 #include <QCoreApplication>
+#include "../simulation/vessel.h"
 
 HydrophoneView::HydrophoneView(QObject *parent) : QObject(parent), mainWin()
 {
@@ -19,5 +20,20 @@ HydrophoneView::HydrophoneView(QObject *parent) : QObject(parent), mainWin()
         qDebug() << "No root object - QML missing?";
         return;
     }
+    hydrophoneViewObject = object;
+    QObject::connect(hydrophoneViewObject, SIGNAL(hydrophoneDirectionChangedSignal(double)),
+                     this, SLOT(hydrophoneDirectionChanged(double)));
+
     connect(&mainWin, SIGNAL(destroyed()), QCoreApplication::instance(), SLOT(quit()));
+}
+
+void HydrophoneView::vesselUpdated(Vessel* vessel) {
+    if(vessel->id==0) {
+        QMetaObject::invokeMethod(hydrophoneViewObject, "subDirectionChanged",
+                                  Q_ARG(QVariant, vessel->heading));
+    }
+}
+
+void HydrophoneView::hydrophoneDirectionChanged(double dir) {
+    qDebug() << Q_FUNC_INFO << dir;
 }

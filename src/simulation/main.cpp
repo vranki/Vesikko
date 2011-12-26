@@ -23,6 +23,8 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QObject::connect(&mapView, SIGNAL(setSpeed(int)), simulation.getSub(), SLOT(setSpeed(int)));
     QObject::connect(&mapView, SIGNAL(setDepthChange(int)), simulation.getSub(), SLOT(setDepthChange(int)));
     QObject::connect(&weaponsView, SIGNAL(fireTorpedo(double)), &simulation, SLOT(fireTorpedo(double)));
+    QObject::connect(&simulation, SIGNAL(vesselUpdated(Vessel*)), &hydrophoneView, SLOT(vesselUpdated(Vessel*)));
+
     PeriscopeView *periscope = 0;
     // periscope = new PeriscopeView(&app);
     if(periscope) {
