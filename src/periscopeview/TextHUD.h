@@ -47,19 +47,21 @@ public:
         osg::Geode* textGeode = new osg::Geode;
 
         _headingText = new osgText::Text;
-        _headingText->setFont("/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf");
+        _headingText->setFont("/usr/share/fonts/truetype/freefont/FreeSans.ttf");
         _headingText->setCharacterSize(80);
         _headingText->setPosition( osg::Vec3f(450.f, 700.f, 0.f ) );
         _headingText->setDataVariance(osg::Object::DYNAMIC);
         _headingText->setColor(osg::Vec4f(0.0,0,0,1.0));
+        _headingText->setAlignment(osgText::TextBase::CENTER_CENTER);
         textGeode->addDrawable( _headingText.get() );
 
         _distanceText = new osgText::Text;
-        _distanceText->setFont("/usr/share/fonts/truetype/ttf-bitstream-vera/Vera.ttf");
+        _distanceText->setFont("/usr/share/fonts/truetype/freefont/FreeSans.ttf");
         _distanceText->setCharacterSize(30);
         _distanceText->setPosition( osg::Vec3f(512.f, 650.f, 0.f ) );
         _distanceText->setDataVariance(osg::Object::DYNAMIC);
         _distanceText->setColor(osg::Vec4f(0,0,0,1.0));
+        _headingText->setAlignment(osgText::TextBase::CENTER_CENTER);
         textGeode->addDrawable( _distanceText.get() );
 
         osg::PositionAttitudeTransform* titlePAT = new osg::PositionAttitudeTransform;

@@ -689,6 +689,9 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
         osg::Vec3f eye(vessel->x,vessel->y,20.f);
         osg::Vec3f centre = eye+osg::Vec3f(0.f,1.f,0.f);
         osg::Vec3f up(0.f, 0.f, 1.f);
+        double periscopeDirection = vessel->heading + periscopeDir + subYaw;
+        while(periscopeDirection >= 360) periscopeDirection -=360;
+        while(periscopeDirection < 0) periscopeDirection +=360;
         osg::Matrixd myCameraMatrix;
 
         osg::Matrixd cameraRotation;
@@ -700,12 +703,12 @@ void PeriscopeView::vesselUpdated(Vessel *vessel) {
                     osg::DegreesToRadians(-90.0), osg::Vec3(1,0,0) , // pitch
                     osg::DegreesToRadians(0.0), osg::Vec3(0,0,1) ); // heading
         myCameraMatrix = cameraTrans*cameraRotation;
-        cameraRotation.makeRotate(osg::DegreesToRadians(vessel->heading + periscopeDir + subYaw), osg::Vec3(0,1,0), // hdg
+        cameraRotation.makeRotate(osg::DegreesToRadians(periscopeDirection), osg::Vec3(0,1,0), // hdg
                                   osg::DegreesToRadians(subPitch), osg::Vec3(1,0,0) , // pitch
                                   osg::DegreesToRadians(subRoll), osg::Vec3(0,0,1) ); //
         myCameraMatrix = myCameraMatrix*cameraRotation;
         viewer.getCamera()->setViewMatrix(myCameraMatrix);
-        hud->setHeading(vessel->heading + periscopeDir + subYaw);
+        hud->setHeading(periscopeDirection);
     } else {
         double zeroDepth = 0;
         if(vessel->type==2) zeroDepth -= 0.5;

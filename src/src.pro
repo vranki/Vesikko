@@ -3,5 +3,6 @@ CONFIG += ordered
 SUBDIRS= mapview\
     periscopeview \
     weaponsview \
-    simulation \
-    hydrophoneview
+    hydrophoneview \
+    servogauges \
+    simulation

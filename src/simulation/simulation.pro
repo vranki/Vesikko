@@ -15,6 +15,7 @@ LIBS +=  ../periscopeview/libperiscopeview.a
 LIBS +=  ../mapview/libmapview.a
 LIBS +=  ../weaponsview/libweaponsview.a
 LIBS +=  ../hydrophoneview/libhydrophoneview.a
+LIBS +=  ../servogauges/libservogauges.a
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp \

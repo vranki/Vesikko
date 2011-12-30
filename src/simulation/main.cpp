@@ -8,6 +8,7 @@
 #include "../periscopeview/periscopeview.h"
 #include "../weaponsview/weaponsview.h"
 #include "../hydrophoneview/hydrophoneview.h"
+#include "../servogauges/servogauges.h"
 
 Q_DECL_EXPORT int main(int argc, char *argv[])
 {
@@ -16,6 +17,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     MapView mapView;
     WeaponsView weaponsView;
     HydrophoneView hydrophoneView;
+    ServoGauges servoGauges;
     QObject::connect(&simulation, SIGNAL(vesselUpdated(Vessel*)), &mapView.mqu, SLOT(vesselUpdated(Vessel*)));
     QObject::connect(&simulation, SIGNAL(vesselCreated(Vessel*)), &mapView.mqu, SLOT(createVessel(Vessel*)));
     QObject::connect(&simulation, SIGNAL(vesselDeleted(Vessel*)), &mapView.mqu, SLOT(vesselDeleted(Vessel*)));
@@ -24,6 +26,7 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     QObject::connect(&mapView, SIGNAL(setDepthChange(int)), simulation.getSub(), SLOT(setDepthChange(int)));
     QObject::connect(&weaponsView, SIGNAL(fireTorpedo(double)), &simulation, SLOT(fireTorpedo(double)));
     QObject::connect(&simulation, SIGNAL(vesselUpdated(Vessel*)), &hydrophoneView, SLOT(vesselUpdated(Vessel*)));
+    QObject::connect(&simulation, SIGNAL(vesselUpdated(Vessel*)), &servoGauges, SLOT(vesselUpdated(Vessel*)));
 
     PeriscopeView *periscope = 0;
     // periscope = new PeriscopeView(&app);

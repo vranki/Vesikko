@@ -9,7 +9,7 @@ WeaponsView::WeaponsView(QObject *parent) : QObject(parent), mainWin()
     view = new QDeclarativeView(&mainWin);
     view->setSource(QUrl::fromLocalFile("src/weaponsview/qml/vesikko/WeaponsView.qml"));
     view->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-    mainWin.setGeometry(QRect(500,0,500,150));
+    mainWin.setGeometry(QRect(500,0,500,250));
     mainWin.setCentralWidget(view);
     mainWin.setWindowTitle("Vesikko Weapons");
     mainWin.show();
